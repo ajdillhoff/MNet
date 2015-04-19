@@ -14,7 +14,7 @@ classdef MLinear < MLayer
             obj.NumIn = numIn;
             obj.NumOut = numOut;
             obj.GradWeight = zeros( numOut, numIn );
-            obj.GradBias = zeros( numOut, 1 );
+            obj.GradBias = zeros( 1, numOut );
 
             obj = obj.Init();
         end
@@ -73,12 +73,32 @@ classdef MLinear < MLayer
         function UpdateParameters( obj, inputs, gradOut )
             deltaG = gradOut' * inputs;
             deltaB = ones( 1, size( inputs, 1 ) ) * gradOut;
-            obj.GradWeight = obj.GradWeight + deltaG;
+
+            % apply regularization
+            lambda = 0.1;
+            m = 200;
+            deltaG = deltaG / m;
+            deltaB = deltaB / m;
+            
+            deltaG = deltaG + ( lambda / m ) * obj.Weight;
+            deltaB = deltaB + ( lambda / m ) * obj.Bias;
+
+            % apply learning rate
+            lr = 0.1;
+            deltaG = deltaG * lr;
+            deltaB = deltaB * lr;
+
+            % apply momentum
+            momentum = 0.9;
+            deltaG = deltaG + momentum * obj.GradWeight;
+            deltaB = deltaB + momentum * obj.GradBias;
+
+            obj.GradWeight = deltaG;
+            obj.GradBias = deltaB;
 
             % weight update with learning rate
-            % TODO: Learning rate will be a parameter
-            obj.Weight = obj.Weight - deltaG * 0.01;
-            obj.Bias = obj.Bias - deltaB * 0.01;
+            obj.Weight = obj.Weight - deltaG;
+            obj.Bias = obj.Bias - deltaB;
         end
         
     end
