@@ -74,5 +74,69 @@ classdef MNet < MLayer
 
             obj.NumLayers = obj.NumLayers + 1;
         end
+        
+        % ----------------------------------------------------------------------
+        % MNet GetParameters
+        %
+        % Returns the unrolled weight and gradient of the network
+        function result = GetParameters( obj )
+            result = zeros( 0, 1 );
+            for i = 1 : obj.NumLayers
+                currentLayer = obj.Layers{ i };
+                if strcmp( currentLayer.Type, 'Linear' )
+                    result = [result; currentLayer.GetParameters()];
+                end
+            end
+        end
+
+        % ----------------------------------------------------------------------
+        % MNet SetParameters
+        %
+        % Takes in a large 1D vector of all parameters of the network. The
+        % parameters are rolled up and assigned to each appropriate layer.
+        function SetParameters( obj, parameters )
+            idx = 1;
+            for i = 1 : obj.NumLayers
+                currentLayer = obj.Layers{ i };
+                if strcmp( currentLayer.Type, 'Linear' )
+                    layerIn = currentLayer.NumIn;
+                    layerOut = currentLayer.NumOut;
+                    layerSize = layerIn * layerOut + layerOut;
+                    layerParameters = parameters( idx : (idx - 1) + layerSize );
+                    currentLayer.SetParameters( layerParameters );
+                    idx = layerSize + 1;
+                end
+            end
+        end
+
+        % ----------------------------------------------------------------------
+        % MNet GetGradients
+        %
+        % Unrolls the gradients of the networks and returns them.
+        % TODO: In the future, Linear layers may not be the only ones with
+        % gradients. Be sure to account for new types of layers.
+        function result = GetGradients( obj )
+            result = zeros( 0, 1 );
+            for i = 1 : obj.NumLayers
+                currentLayer = obj.Layers{ i };
+                if strcmp( currentLayer.Type, 'Linear' )
+                    result = [result; currentLayer.GetGradients()];
+                end
+            end
+        end
+
+        % ----------------------------------------------------------------------
+        % MNet ZeroGradients
+        %
+        % Resets all gradients to 0.
+        function ZeroGradients( obj )
+            for i = 1 : obj.NumLayers
+                currentLayer = obj.Layers{ i };
+                if strcmp( currentLayer.Type, 'Linear' )
+                    currentLayer.ZeroGradients();
+                end
+            end
+        end
+
     end
 end
