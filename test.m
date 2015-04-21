@@ -22,7 +22,6 @@ model.AddLayer( MSoftMax() );
 
 % add criterion
 criterion = MCEError();
-%criterion = MMSError();
 
 % optimization options
 w = model.GetParameters();
@@ -30,10 +29,11 @@ w = model.GetParameters();
 % randomly select order
 idxs = randperm( 2000 );
 
-cm = zeros( 20 );
+cm = MConfusionMatrix( 20 );
 
 epoch = 0;
 while true
+    J = 0;
     for batch = 1 : batchSize : size( trainingSet, 1 )
         range = idxs( batch : batchSize + batch - 1 );
         currentBatch = trainingSet( range, : );
@@ -42,7 +42,8 @@ while true
         % handle to cost function
         costFunc = @(w) costFunction( w, model, criterion, currentBatch, currentTargets, cm );
 
-        w = sgd( costFunc, w );
+        [w, cost] = sgd( costFunc, w );
+        J = J + cost;
     end
 
     % Check validation set
@@ -59,8 +60,9 @@ while true
     %fprintf( 'Precision %.20f\n', pre );
     %fprintf( 'recall %.20f\n', recall );
 
-    % build confusion matrix
-
-
+    fprintf( 'Loss: %f\n', J );
+    % print confusion matrix
+    cm.Print();
+    cm.Reset();
     epoch = epoch + 1;
 end

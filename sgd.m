@@ -1,4 +1,4 @@
-function w = sgd( costFunc, w )
+function [w, f] = sgd( costFunc, w )
     momentum = 0.9;
     lr = 0.3;
 
