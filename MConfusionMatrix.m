@@ -25,6 +25,8 @@ classdef MConfusionMatrix < handle
         % Displays the current matrix.
         function Print( obj )
             disp( obj.Matrix );
+            acc = sum( diag( obj.Matrix ) ) / sum( sum( obj.Matrix ) );
+            fprintf( 'Accuracy: %f\n', acc );
         end
 
         % ----------------------------------------------------------------------
