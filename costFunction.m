@@ -1,4 +1,4 @@
-function [f, dfdx] = costFunction( parameters, model, criterion, currentBatch, currentTargets )
+function [f, dfdx] = costFunction( parameters, model, criterion, currentBatch, currentTargets, cm )
 
     model.ZeroGradients();
 
@@ -7,7 +7,7 @@ function [f, dfdx] = costFunction( parameters, model, criterion, currentBatch, c
 
     % Compute error
     o = model.Forward( currentBatch );
-    f = criterion.ComputeOutput( o, currentTargets );
+    f = criterion.ComputeOutput( o, currentTargets )
 
     % Backward propagation to get df/dparameters
     fx = criterion.UpdateGradInput( o, currentTargets );

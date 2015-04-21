@@ -13,8 +13,7 @@ classdef MCEError < MLayer
         % Computes the Cross Entropy Error given the output of the network and
         % the target (true values).
         function result = ComputeOutput( obj, output, target )
-            result = -target .* log( output ) + ( 1 - target ) .* log( 1 - output );
-            result = sum( result ) / size( output, 1 );
+            result = -sum( sum( target .* log( output ) ) ) / size( output, 1 );
         end
     
         % ----------------------------------------------------------------------
@@ -22,7 +21,7 @@ classdef MCEError < MLayer
         %
         % Computes the Cross Entropy Error derivative and returns the result.
         function result = UpdateGradInput( obj, output, target )
-            result = output - target;
+            result = target - output;
         end
 
     end

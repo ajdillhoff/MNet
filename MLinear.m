@@ -24,8 +24,8 @@ classdef MLinear < MLayer
         %
         % Initializes weights randomly.
         function obj = Init( obj )
-            obj.Weight = rand( obj.NumOut, obj.NumIn );
-            obj.Bias = rand( obj.NumOut, 1 );
+            obj.Weight = rand( obj.NumOut, obj.NumIn ) - 0.5;
+            obj.Bias = rand( obj.NumOut, 1 ) - 0.5;
         end
 
         % ----------------------------------------------------------------------
@@ -79,28 +79,14 @@ classdef MLinear < MLayer
             % apply regularization
             lambda = 0;
             m = 4;
-            %deltaG = deltaG / m;
-            %deltaB = deltaB / m;
+            deltaG = deltaG / m;
+            deltaB = deltaB / m;
             
             deltaG = deltaG + ( lambda / m ) * obj.Weight;
             %deltaB = deltaB + ( lambda / m ) * obj.Bias;
 
-            %% apply learning rate
-            %lr = 0.01;
-            %deltaG = deltaG * lr;
-            %deltaB = deltaB * lr;
-
-            %% apply momentum
-            %momentum = 0.99;
-            %deltaG = deltaG + momentum * obj.GradWeight;
-            %deltaB = deltaB + momentum * obj.GradBias;
-
             obj.GradWeight = deltaG;
             obj.GradBias = deltaB;
-
-            % weight update with learning rate
-            %obj.Weight = obj.Weight - deltaG;
-            %obj.Bias = obj.Bias - deltaB;
         end
         
         % ----------------------------------------------------------------------
