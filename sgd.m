@@ -1,6 +1,6 @@
 function [w, f] = sgd( costFunc, w )
-    momentum = 0.9;
-    lr = 0.3;
+    momentum = 0;
+    lr = 0.05;
 
     % Evaluate the network output
     [f, dfdx] = costFunc( w );

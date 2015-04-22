@@ -1,23 +1,33 @@
 % load FRGC data set
-trainingSet = buildTrainingSet( [10 10] );
-cl = eye( 20 );
-targets = zeros( 2000, 1 );
-for i = 1 : 20
-    targets( ( i - 1 ) * 100 + 1 : i * 100 ) = i;
-end
-targets = cl( targets, : );
-numInputs = size( trainingSet, 2 );
+%trainingSet = buildTrainingSet( [40 40] );
+%cl = eye( 20 );
+%targets = zeros( 2000, 1 );
+%for i = 1 : 20
+    %targets( ( i - 1 ) * 100 + 1 : i * 100 ) = i;
+%end
+%targets = cl( targets, : );
+%numInputs = size( trainingSet, 2 );
 
 % load test set
 %testSet = buildTestSet( [10 10] );
+
+% Test using MNIST data set
+[trainingSet, trainingLabels, ~, ~] = loadMNIST();
+trainingSet = trainingSet';
+numInputs = size( trainingSet, 2 );
+numExamples = size( trainingSet, 1 );
+cl = eye( 10 );
+trainingLabels = 1 + trainingLabels;
+trainingLabels = uint8( trainingLabels );
+trainingLabels = cl( trainingLabels, : );
 
 batchSize = 10;
 
 % build network
 model = MNet();
-model.AddLayer( MLinear( numInputs, 200 ) );
+model.AddLayer( MLinear( numInputs, 1536 ) );
 model.AddLayer( MSigmoid() );
-model.AddLayer( MLinear( 200, 20 ) );
+model.AddLayer( MLinear( 1536, 10 ) );
 model.AddLayer( MSoftMax() );
 
 % add criterion
@@ -27,17 +37,17 @@ criterion = MCEError();
 w = model.GetParameters();
 
 % randomly select order
-idxs = randperm( 2000 );
+idxs = randperm( numExamples );
 
-cm = MConfusionMatrix( 20 );
+cm = MConfusionMatrix( 10 );
 
 epoch = 0;
 while true
     J = 0;
-    for batch = 1 : batchSize : size( trainingSet, 1 )
+    for batch = 1 : batchSize : numExamples
         range = idxs( batch : batchSize + batch - 1 );
         currentBatch = trainingSet( range, : );
-        currentTargets = targets( range, : );
+        currentTargets = trainingLabels( range, : );
 
         % handle to cost function
         costFunc = @(w) costFunction( w, model, criterion, currentBatch, currentTargets, cm );

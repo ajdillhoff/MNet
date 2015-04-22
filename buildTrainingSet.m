@@ -10,7 +10,8 @@ function result = buildTrainingSet( windowSize )
     result = zeros( 0, windowSize( 1 ) * windowSize( 2 ) );
     
     for i = 1 : numClasses
-        dataPath = sprintf( '~/Documents/Data Sets/FRGC_Partial/class_%d/train/', i );
+        %dataPath = sprintf( '~/Documents/Data Sets/FRGC_Partial/class_%d/train/', i );
+        dataPath = sprintf( '/home2/Downloads/FRGC_Partial/class_%d/train/', i );
         dataType = '*.bmp';
         directory = dir( [dataPath dataType] );
         dataCount = length( directory );
