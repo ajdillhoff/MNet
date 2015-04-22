@@ -12,22 +12,34 @@
 %testSet = buildTestSet( [10 10] );
 
 % Test using MNIST data set
-[trainingSet, trainingLabels, ~, ~] = loadMNIST();
-trainingSet = trainingSet';
+[trainingSet, trainingLabels, testSet, testLabels] = loadMNIST( 0 );
 numInputs = size( trainingSet, 2 );
 numExamples = size( trainingSet, 1 );
+
 cl = eye( 10 );
 trainingLabels = 1 + trainingLabels;
 trainingLabels = uint8( trainingLabels );
 trainingLabels = cl( trainingLabels, : );
 
+if exist( 'testLabels' )
+    testLabels = 1 + testLabels;
+    testLabels = uint8( testLabels );
+    testLabels = cl( testLabels, : );
+end
+
+% Normalize input data
+avg = mean( trainingSet, 1 );
+trainingSet = bsxfun( @minus, trainingSet, avg );
+avg = mean( testSet, 1 );
+testSet = bsxfun( @minus, testSet, avg );
+
 batchSize = 10;
 
 % build network
 model = MNet();
-model.AddLayer( MLinear( numInputs, 1536 ) );
+model.AddLayer( MLinear( numInputs, 1568 ) );
 model.AddLayer( MSigmoid() );
-model.AddLayer( MLinear( 1536, 10 ) );
+model.AddLayer( MLinear( 1568, 10 ) );
 model.AddLayer( MSoftMax() );
 
 % add criterion
@@ -56,21 +68,24 @@ while true
         J = J + cost;
     end
 
-    % Check validation set
-    %o = model.Forward( testSet );
-    %o = o > 0.5;
-
-    %cm = zeros( 2 );
-    %cm( 1, 1 ) = sum( o( 1 : 70, : ) == 1 );
-    %cm( 1, 2 ) = sum( o( 1 : 70, : ) == 0 );
-    %cm( 2, 1 ) = sum( o( 71 : end, : ) == 1 );
-    %cm( 2, 2 ) = sum( o( 71 : end, : ) == 0 );
-    %pre = cm( 1, 1 ) / ( cm( 1, 1 ) + cm( 1, 2 ) );
-    %recall = cm( 1, 1 ) / ( cm( 1, 1 ) + cm( 2, 1 ) );
-    %fprintf( 'Precision %.20f\n', pre );
-    %fprintf( 'recall %.20f\n', recall );
-
     fprintf( 'Loss: %f\n', J );
+    % print confusion matrix
+    cm.Print();
+    cm.Reset();
+
+    % test against test set
+    if exist( 'testSet' )
+        fprintf( 'Testing using test set\n' );
+        for batch = 1 : batchSize : size( testSet, 1 );
+            range = batch : batchSize + batch - 1;
+            currentBatch = testSet( range, : );
+            currentTargets = testLabels( range, : );
+
+            % handle to cost function
+            costFunction( w, model, criterion, currentBatch, currentTargets, cm );
+        end
+    end
+
     % print confusion matrix
     cm.Print();
     cm.Reset();

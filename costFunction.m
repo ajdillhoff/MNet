@@ -12,7 +12,7 @@ function [f, dfdx] = costFunction( parameters, model, criterion, currentBatch, c
     % add to confusion matrix
     [m, k] = max( o, [], 2 );
     [i, j] = find( currentTargets == 1 );
-    cm.Add( j, k );
+    cm.Add( j, k(i) );
 
     % Backward propagation to get df/dparameters
     fx = criterion.UpdateGradInput( o, currentTargets );

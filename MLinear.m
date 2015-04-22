@@ -24,6 +24,7 @@ classdef MLinear < MLayer
         %
         % Initializes weights randomly.
         function obj = Init( obj )
+            rng( 'shuffle' );
             obj.Weight = 2 * rand( obj.NumOut, obj.NumIn ) - 1;
             obj.Bias = 2 * rand( obj.NumOut, 1 ) - 1;
         end

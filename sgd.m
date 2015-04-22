@@ -1,5 +1,5 @@
 function [w, f] = sgd( costFunc, w )
-    momentum = 0;
+    momentum = 0.95;
     lr = 0.05;
 
     % Evaluate the network output
