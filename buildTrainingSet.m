@@ -2,7 +2,7 @@ function result = buildTrainingSet( windowSize )
 % result = buildTrainingSet( windowSize )
 %
 % Loads training images from the given data path and constructs a training set
-% to be used for SRC.
+% to be used for learning.
 %
 % windowSize - The desired downsampling size.
 
@@ -10,8 +10,8 @@ function result = buildTrainingSet( windowSize )
     result = zeros( 0, windowSize( 1 ) * windowSize( 2 ) );
     
     for i = 1 : numClasses
-        %dataPath = sprintf( '~/Documents/Data Sets/FRGC_Partial/class_%d/train/', i );
-        dataPath = sprintf( '/home2/Downloads/FRGC_Partial/class_%d/train/', i );
+        dataPath = sprintf( '~/Documents/Data Sets/FRGC_Partial/class_%d/train/', i );
+        %dataPath = sprintf( '/home2/Downloads/FRGC_Partial/class_%d/train/', i );
         dataType = '*.bmp';
         directory = dir( [dataPath dataType] );
         dataCount = length( directory );
