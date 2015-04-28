@@ -38,16 +38,17 @@ classdef MLinear < MLayer
             ComputeOutput@MLayer( obj );
             dims = min( size( inputs ) );
 
-            if dims == 1
-                result = obj.Bias;
-                result = result + obj.Weight * inputs;
-            elseif dims > 1
-                result = inputs * obj.Weight';
+            %if dims == 1
+                %result = obj.Bias;
+                %result = result + obj.Weight * inputs;
+            %elseif dims > 1
+            result = inputs * obj.Weight';
 
-                % Add bias term
-                biasBuf = repmat( obj.Bias', size( result, 1 ), 1 );
-                result = result + biasBuf;
-            elseif ndims( inputs ) > 2
+            % Add bias term
+            biasBuf = repmat( obj.Bias', size( result, 1 ), 1 );
+            result = result + biasBuf;
+
+            if ndims( inputs ) > 2
                 fprintf( 'ERROR: MLinear.ComputeOutput: Illegal number of ' ...
                     + 'dimensions.' );
             end
