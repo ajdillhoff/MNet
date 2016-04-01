@@ -6,12 +6,13 @@ function result = buildTestSet( windowSize )
 %
 % windowSize - The desired downsampling size.
 
-    numClasses = 20;
+    numClasses = 1;
     result = zeros( 0, windowSize( 1 ) * windowSize( 2 ) );
     
     for i = 1 : numClasses
-        dataPath = sprintf( '~/Documents/Data Sets/FRGC_Partial/class_%d/test/', i );
-        dataType = '*.bmp';
+        %dataPath = sprintf( '~/Documents/Data Sets/FRGC_Partial/class_%d/test/', i );
+        dataPath = sprintf( '~/Documents/School/Graduate/CSE6363/Project1/images/Test/');
+        dataType = '*.pgm';
         directory = dir( [dataPath dataType] );
         dataCount = length( directory );
         for idx = 1:dataCount

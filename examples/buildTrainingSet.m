@@ -6,13 +6,14 @@ function result = buildTrainingSet( windowSize )
 %
 % windowSize - The desired downsampling size.
 
-    numClasses = 20;
+    numClasses = 1;
     result = zeros( 0, windowSize( 1 ) * windowSize( 2 ) );
     
     for i = 1 : numClasses
-        dataPath = sprintf( '~/Documents/Data Sets/FRGC_Partial/class_%d/train/', i );
+        %dataPath = sprintf( '~/Documents/Data Sets/FRGC_Partial/class_%d/train/', i );
         %dataPath = sprintf( '/home2/Downloads/FRGC_Partial/class_%d/train/', i );
-        dataType = '*.bmp';
+        dataPath = sprintf( '~/Documents/School/Graduate/CSE6363/Project1/images/Training/');
+        dataType = '*.pgm';
         directory = dir( [dataPath dataType] );
         dataCount = length( directory );
         for idx = 1:dataCount
